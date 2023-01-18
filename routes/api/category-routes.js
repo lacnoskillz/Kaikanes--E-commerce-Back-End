@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Category, Product } = require('../../models');
-
+const sequelize = require('../../config/connection');
 // The `/api/categories` endpoint
 
 router.get('/', async (req, res) => {
@@ -15,12 +15,13 @@ router.get('/:id', async (req, res) => {
   // be sure to include its associated Products
   try {
     const categoryData = await Category.findByPk(req.params.id, {
+     
        include: [ { model: Product}],
       attributes: {
       include: [
         [
         sequelize.literal(
-          `(SELECT * FROM product WHERE product.category_id = category.id)`
+          `(SELECT id FROM product WHERE product.category_id = category.id)`
         ),
         'getByID',
       ],
@@ -29,7 +30,7 @@ router.get('/:id', async (req, res) => {
   
     });
     
-
+    console.log(req.params.id);
     if (!categoryData) {
       res.status(404).json({ message: 'Not found' });
       return;
@@ -37,6 +38,7 @@ router.get('/:id', async (req, res) => {
 
     res.status(200).json(categoryData);
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
