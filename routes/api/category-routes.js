@@ -1,13 +1,23 @@
 const router = require('express').Router();
 const { Category, Product } = require('../../models');
-const sequelize = require('../../config/connection');
 // The `/api/categories` endpoint
 
 router.get('/', async (req, res) => {
-  const userData = await Category.findAll().catch((err) => {
-    res.json(err);
-  });
-  res.json(userData);
+  try{
+    const categoryData = await Category.findAll(
+      {
+        include: [{ model: Product }],
+      }
+    )
+   
+
+    res.status(200).json(categoryData);
+
+  } catch (err){
+    console.log(err);
+    res.status(500).json(err);
+  }
+    
 });
 
 router.get('/:id', async (req, res) => {
@@ -15,21 +25,12 @@ router.get('/:id', async (req, res) => {
   // be sure to include its associated Products
   try {
     const categoryData = await Category.findByPk(req.params.id, {
-     
-       include: [ { model: Product}],
-      attributes: {
-      include: [
-        [
-        sequelize.literal(
-          `(SELECT id FROM product WHERE product.category_id = category.id)`
-        ),
-        'getByID',
-      ],
-    ],
-  },
-  
+
+      include: [{ model: Product }],
+
+
     });
-    
+
     console.log(req.params.id);
     if (!categoryData) {
       res.status(404).json({ message: 'Not found' });
@@ -54,7 +55,17 @@ router.post('/', async (req, res) => {
 });
 // update a category by its `id` value
 router.put('/:id', async (req, res) => {
- 
+  try {
+    const categoryData = await Category.update(req.body, {
+      where: {
+        id: req.params.id
+      }
+    }) ;
+    
+    res.status(200).json(categoryData);
+  } catch (err) {
+    res.status(400).json(err);
+  }
 
 });
 // delete a category by its `id` value
