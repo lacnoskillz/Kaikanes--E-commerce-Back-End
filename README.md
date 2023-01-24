@@ -18,4 +18,4 @@ for users to compete with other e-commerce companies.
 #### Link
 ***
 click for walk through video
-[click me](https://drive.google.com/file/d/1087L3XpZblmW0zmBo4XclWGwXx0rDpKC/view)
+[click me](https://drive.google.com/file/d/11KdNmoPz70CC7i6vVy22f-BhOTF97dDU/view)
